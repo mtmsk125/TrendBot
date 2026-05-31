@@ -2,49 +2,44 @@ import os
 import json
 import random
 import logging
-from telegram.ext import ApplicationBuilder, CommandHandler
+from telegram.ext import ApplicationBuilder
 
 # إعدادات التسجيل
 logging.basicConfig(level=logging.INFO)
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
+CHANNEL_ID = '@MyTrendChannel' 
 
-# دالة قراءة ملف المنتجات
 def load_products():
-    # تأكد أن ملف products.json موجود في نفس مجلد الكود
     with open('products.json', 'r', encoding='utf-8') as f:
         return json.load(f)
 
-async def start(update, context):
-    await update.message.reply_text("مرحباً! البوت يعمل. استخدم /trend لجلب منتج للنشر في القناة.")
-
-async def trend(update, context):
+# دالة النشر التسويقي
+async def auto_post(context):
     try:
         products = load_products()
         product = random.choice(products)
         
-        # صياغة المنشور
+        # صياغة المنشور بشكل احترافي
         message = (
-            f"{product['title_en']} | {product['title_ar']} 🛠️\n\n"
-            f"{product['description_en']}\n"
-            f"{product['description_ar']}\n\n"
-            f"🔗 احصل عليه الآن: {product['link']}\n\n"
-            f"#CleverMarketing #Engineering"
+            f"⚡ **عرض اليوم | {product['title_ar']}**\n\n"
+            f"💡 **المشكلة:** {product['problem']}\n"
+            f"🏷️ **خصم خاص:** {product['discount_percentage']}\n\n"
+            f"🔗 **اطلبها الآن من هنا:** {product['link']}\n\n"
+            f"#CleverMarketing #Engineering #Deals"
         )
         
-        # النشر في قناتك
-        await context.bot.send_message(chat_id='@MyTrendChannel', text=message)
-        await update.message.reply_text("✅ تم نشر المنتج في القناة بنجاح!")
+        await context.bot.send_message(chat_id=CHANNEL_ID, text=message, parse_mode='Markdown')
+        logging.info("تم النشر بنجاح!")
     except Exception as e:
-        # هذه الرسالة ستظهر لك في حال وجود خطأ (مثل عدم إضافة البوت كـ مشرف)
-        await update.message.reply_text(f"❌ حدث خطأ: {str(e)}")
+        logging.error(f"خطأ في النشر: {e}")
 
 if __name__ == '__main__':
-    if not BOT_TOKEN:
-        print("خطأ: يرجى إعداد متغير BOT_TOKEN")
-    else:
-        application = ApplicationBuilder().token(BOT_TOKEN).build()
-        application.add_handler(CommandHandler('start', start))
-        application.add_handler(CommandHandler('trend', trend))
-        print("البوت بدأ العمل...")
-        application.run_polling()
-                                        
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
+    
+    # جدولة النشر (interval كل ساعة، و first=0 للبدء فوراً)
+    job_queue = application.job_queue
+    job_queue.run_repeating(auto_post, interval=3600, first=0)
+    
+    print("البوت يعمل الآن وسيبدأ بالنشر فوراً...")
+    application.run_polling()
+    
