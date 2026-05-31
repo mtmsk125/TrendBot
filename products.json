@@ -1,16 +1,9 @@
 [
     {
-        "title_en": "Digital Laser Distance Measurer",
-        "title_ar": "جهاز قياس المسافات بالليزر الرقمي",
-        "description_en": "Precision tool for MEP and construction site measurements.",
-        "description_ar": "أداة دقيقة لقياس المسافات في المواقع الهندسية ومشاريع MEP.",
-        "link": "ضع_رابط_الأفلييت_هنا"
-    },
-    {
-        "title_en": "Professional Digital Multimeter",
-        "title_ar": "جهاز أفوميتر رقمي احترافي",
-        "description_en": "Essential for electrical maintenance and troubleshooting.",
-        "description_ar": "أساسي لأعمال الصيانة الكهربائية وكشف الأعطال.",
-        "link": "ضع_رابط_الأفلييت_هنا"
+        "title_en": "Example",
+        "title_ar": "مثال",
+        "description_en": "Desc",
+        "description_ar": "وصف",
+        "link": "https://amazon.com"
     }
 ]
