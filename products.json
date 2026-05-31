@@ -1,9 +1,37 @@
 [
-    {
-        "title_en": "Example",
-        "title_ar": "مثال",
-        "description_en": "Desc",
-        "description_ar": "وصف",
-        "link": "https://amazon.com"
-    }
+  {
+    "title_en": "Digital Laser Measurer",
+    "title_ar": "جهاز قياس بالليزر",
+    "problem": "القياس التقليدي بالشريط المعدني يسبب أخطاء ويستغرق وقتاً.",
+    "discount_percentage": "20%",
+    "link": "https://amazon.com/laser-measure"
+  },
+  {
+    "title_en": "Precision Multimeter",
+    "title_ar": "أفوميتر رقمي دقيق",
+    "problem": "صعوبة تشخيص أعطال الدوائر الكهربائية بدقة.",
+    "discount_percentage": "15%",
+    "link": "https://amazon.com/multimeter"
+  },
+  {
+    "title_en": "LED Inspection Light",
+    "title_ar": "كشاف فحص هندسي",
+    "problem": "عدم وضوح الرؤية في الأماكن الضيقة والمظلمة أثناء الصيانة.",
+    "discount_percentage": "30%",
+    "link": "https://amazon.com/inspection-light"
+  },
+  {
+    "title_en": "Soldering Station",
+    "title_ar": "محطة لحام احترافية",
+    "problem": "البطء في تسخين المكواة التقليدية وعدم ثبات درجة الحرارة.",
+    "discount_percentage": "10%",
+    "link": "https://amazon.com/soldering-station"
+  },
+  {
+    "title_en": "Adjustable Wrench Set",
+    "title_ar": "طقم مفاتيح ربط قابلة للتعديل",
+    "problem": "تعدد الأدوات في الحقيبة يسبب ثقلاً وفوضى.",
+    "discount_percentage": "25%",
+    "link": "https://amazon.com/wrench-set"
+  }
 ]
