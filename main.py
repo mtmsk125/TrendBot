@@ -31,7 +31,7 @@ async def trend(update, context):
         )
         
         # النشر في القناة (استبدل @YourChannelUsername بمعرف قناتك)
-        await context.bot.send_message(chat_id='@YourChannelUsername', text=message)
+        await context.bot.send_message(chat_id='@MyTrendChannel', text=message)
         await update.message.reply_text("✅ تم نشر المنتج في القناة بنجاح!")
     except Exception as e:
         await update.message.reply_text(f"❌ حدث خطأ: {str(e)}")
