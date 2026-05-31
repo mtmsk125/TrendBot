@@ -19,7 +19,7 @@ async def auto_post(context):
         products = load_products()
         product = random.choice(products)
         
-        # صياغة المنشور بشكل احترافي
+        # صياغة المنشور
         message = (
             f"⚡ **عرض اليوم | {product['title_ar']}**\n\n"
             f"💡 **المشكلة:** {product['problem']}\n"
@@ -36,10 +36,15 @@ async def auto_post(context):
 if __name__ == '__main__':
     application = ApplicationBuilder().token(BOT_TOKEN).build()
     
-    # جدولة النشر (interval كل ساعة، و first=0 للبدء فوراً)
+    # إعداد الـ JobQueue
     job_queue = application.job_queue
-    job_queue.run_repeating(auto_post, interval=3600, first=0)
     
-    print("البوت يعمل الآن وسيبدأ بالنشر فوراً...")
+    # 1. النشر فوراً عند بدء التشغيل
+    job_queue.run_once(auto_post, when=1)
+    
+    # 2. النشر التلقائي كل 10 دقائق (600 ثانية)
+    job_queue.run_repeating(auto_post, interval=600, first=600)
+    
+    print("البوت يعمل الآن وسينشر كل 10 دقائق...")
     application.run_polling()
     
