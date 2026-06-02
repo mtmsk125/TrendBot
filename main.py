@@ -1,72 +1,43 @@
 import os
-import json
-import random
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# إعدادات التسجيل
 logging.basicConfig(level=logging.INFO)
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-CHANNEL_ID = '@MyTrendChannel' 
 
-# دالة النشر التلقائي
-async def auto_post(context: ContextTypes.DEFAULT_TYPE):
-    try:
-        # يمكنك إضافة ملف products.json لاحقاً
-        message = "⚡ **عرض اليوم**\n\nاكتشف أحدث الأدوات الهندسية عبر منصتنا!"
-        await context.bot.send_message(chat_id=CHANNEL_ID, text=message, parse_mode='Markdown')
-    except Exception as e:
-        logging.error(f"خطأ: {e}")
-
-# واجهة البوت الرئيسية بالأزرار
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    welcome_text = "🏗️ **أهلاً بك في المنصة الهندسية المتكاملة** ⚙️\nاختر الخدمة من القائمة:"
-    
-    keyboard = [
+# القائمة الرئيسية - الشجرة
+def get_main_menu():
+    return InlineKeyboardMarkup([
         [InlineKeyboardButton("📚 المرجع الهندسي", callback_data='mep_tools')],
+        [InlineKeyboardButton("📏 حصر الكميات (BOQ)", callback_data='boq_tool')],
+        [InlineKeyboardButton("🖥️ موارد الأوتوكاد", callback_data='autocad_res')],
+        [InlineKeyboardButton("🤝 دليل الموردين", callback_data='suppliers')],
         [InlineKeyboardButton("🤖 اسأل المساعد الذكي", callback_data='tech_solutions')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(welcome_text, reply_markup=reply_markup, parse_mode='Markdown')
+    ])
 
-# التعامل مع الأزرار
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🏗️ **أهلاً بك في المنصة الهندسية المتكاملة** ⚙️\nاختر الخدمة المطلوبة:", reply_markup=get_main_menu())
+
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     
-    if query.data == 'mep_tools':
-        keyboard = [[InlineKeyboardButton("🔙 العودة للرئيسية", callback_data='back')]]
-        await query.edit_message_text(
-            "⚙️ **المرجع الهندسي:**\n\n"
-            "1. 📚 [المكتبة الفنية (أكواد NFPA)](https://www.nfpa.org/codes-and-standards)\n"
-            "2. 📐 [محولات الوحدات الهندسية](https://www.unitconverters.net/)",
-            reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown'
-        )
+    if query.data == 'back':
+        await query.edit_message_text("🏗️ **أهلاً بك في المنصة الهندسية المتكاملة** ⚙️\nاختر الخدمة المطلوبة:", reply_markup=get_main_menu())
+    
+    elif query.data == 'mep_tools':
+        await query.edit_message_text("⚙️ **المرجع الهندسي:**\n1. [أكواد NFPA](https://www.nfpa.org/codes-and-standards)\n2. [محولات الوحدات](https://www.unitconverters.net/)", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 العودة", callback_data='back')]]), parse_mode='Markdown')
+    
     elif query.data == 'tech_solutions':
-        keyboard = [[InlineKeyboardButton("🔙 العودة للرئيسية", callback_data='back')]]
-        await query.edit_message_text(
-            "🤖 **أنا هنا معك!**\nأرسل سؤالك الهندسي في المحادثة وسأجيبك فوراً.",
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
-    elif query.data == 'back':
-        # إعادة إظهار القائمة الرئيسية
-        keyboard = [
-            [InlineKeyboardButton("📚 المرجع الهندسي", callback_data='mep_tools')],
-            [InlineKeyboardButton("🤖 اسأل المساعد الذكي", callback_data='tech_solutions')]
-        ]
-        await query.edit_message_text("🏗️ **أهلاً بك في المنصة الهندسية المتكاملة** ⚙️\nاختر الخدمة:", reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text("🤖 **أنا هنا معك!** أرسل سؤالك الهندسي وسأجيبك فوراً.", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 العودة", callback_data='back')]]))
+    
+    else:
+        await query.edit_message_text(f"🚧 **قسم {query.data} قيد التطوير حالياً.**\nسنقوم بتفعيله قريباً!", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 العودة", callback_data='back')]]))
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(BOT_TOKEN).build()
-    
-    # المعالجات
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button_handler))
-    
-    # جدولة النشر
-    job_queue = application.job_queue
-    job_queue.run_repeating(auto_post, interval=86400, first=10)
-    
     application.run_polling()
     
