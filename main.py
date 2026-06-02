@@ -1,39 +1,3 @@
-import os
-import json
-import random
-import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
-
-# إعدادات التسجيل
-logging.basicConfig(level=logging.INFO)
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-CHANNEL_ID = '@MyTrendChannel' 
-
-# دالة تحميل البيانات
-def load_products():
-    with open('products.json', 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-# دالة النشر التلقائي (التي كانت لديك)
-async def auto_post(context: ContextTypes.DEFAULT_TYPE):
-    try:
-        products = load_products()
-        product = random.choice(products)
-        message = (f"⚡ **عرض اليوم | {product['title_ar']}**\n\n"
-                   f"💡 **المشكلة:** {product['problem']}\n"
-                   f"🔗 **اطلبها الآن:** {product['link']}")
-        await context.bot.send_message(chat_id=CHANNEL_ID, text=message, parse_mode='Markdown')
-    except Exception as e:
-        logging.error(f"خطأ في النشر: {e}")
-
-# واجهة القائمة الرئيسية
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [InlineKeyboardButton("🏗️ الخدمات الهندسية", callback_data='mep_tools')],
-        [InlineKeyboardButton("💻 الحلول والذكاء الاصطناعي", callback_data='tech_solutions')],
-        [InlineKeyboardButton("⚙️ إدارة الحساب", callback_data='settings')]
-    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("أهلاً بك في المنصة الهندسية المتكاملة. اختر الخدمة:", reply_markup=reply_markup)
 
@@ -59,4 +23,5 @@ if __name__ == '__main__':
     job_queue.run_repeating(auto_post, interval=86400, first=10)
     
     application.run_polling()
-        
+
+    
